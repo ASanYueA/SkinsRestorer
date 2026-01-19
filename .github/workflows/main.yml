@@ -1,0 +1,61 @@
+name: Build SkinsRestorer
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Build with Gradle
+      run: ./gradlew build --no-daemon --stacktrace
+      
+    - name: Upload Bukkit JAR
+      uses: actions/upload-artifact@v4
+      with:
+        name: SkinsRestorer-Bukkit
+        path: bukkit/build/libs/*.jar
+        
+    - name: Upload Bungee JAR
+      uses: actions/upload-artifact@v4
+      with:
+        name: SkinsRestorer-Bungee
+        path: bungee/build/libs/*.jar
+        
+    - name: Upload Velocity JAR
+      uses: actions/upload-artifact@v4
+      with:
+        name: SkinsRestorer-Velocity
+        path: velocity/build/libs/*.jar
+        
+    - name: Upload Fabric JAR
+      uses: actions/upload-artifact@v4
+      with:
+        name: SkinsRestorer-Mod-Fabric
+        path: mod/fabric/build/libs/*.jar
+        
+    - name: Upload NeoForge JAR
+      uses: actions/upload-artifact@v4
+      with:
+        name: SkinsRestorer-Mod-NeoForge
+        path: mod/neoforge/build/libs/*.jar
